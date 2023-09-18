@@ -13,6 +13,11 @@ dt = 0
 
 player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
 
+for i in range(10):
+    utils.Enemy(screen)
+
+lasers = []
+
 while running:
 
     for event in pygame.event.get():
@@ -24,9 +29,8 @@ while running:
     dt = clock.tick(60) / 1000
 
     # RENDER YOUR GAME HERE
-    pygame.draw.circle(screen, "white", player_pos, 40)
-    for i in range(10):
-        utils.Enemy(screen)
+    pygame.draw.circle(screen, "white", (player_pos.x, player_pos.y), 40)
+
     keys = pygame.key.get_pressed()
 
     if keys[pygame.K_w] or keys[pygame.K_UP]:
