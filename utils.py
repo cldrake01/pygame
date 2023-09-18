@@ -3,17 +3,23 @@ import random
 
 
 class Laser:
-    def __init__(self, screen, pos, color):
+    def __init__(self, screen, pos: tuple[float, float], color, dt):
         self._screen = screen
-        self._pos = pos
+        self._pos = list(pos[:])
         self._color = color
+        self._dt = dt
+        self._rect = pygame.draw.rect(self._screen, self._color, rect=(self._pos[0] - 4, self._pos[1] - 140, 8, 80))
 
-    def draw(self):
-        pygame.draw.rect(self._screen, self._color, rect=(self._pos[0] - 4, self._pos[1] - 140, 8, 80))
+    def move(self, lasers: list):
+        self._pos[1] -= 300 * self._dt
 
-    def move(self, dt):
-        self._pos[0] += self._pos[1] * 0.5 * dt
-        self.draw()
+        print(self._pos[1])
+
+        if self._pos[1] < 0:
+            lasers.remove(self)
+        else:
+            self._rect.move(0, self._pos[1])
+            pygame.draw.rect(self._screen, self._color, rect=(self._pos[0] - 4, self._pos[1] - 140, 8, 80))
 
 
 class Enemy:

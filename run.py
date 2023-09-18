@@ -21,11 +21,14 @@ while running:
 
     screen.fill("black")
 
+    dt = clock.tick(60) / 1000
+
     # RENDER YOUR GAME HERE
     pygame.draw.circle(screen, "white", player_pos, 40)
     for i in range(10):
         utils.Enemy(screen)
     keys = pygame.key.get_pressed()
+
     if keys[pygame.K_w] or keys[pygame.K_UP]:
         player_pos.y -= 300 * dt
     if keys[pygame.K_s] or keys[pygame.K_DOWN]:
@@ -34,14 +37,13 @@ while running:
         player_pos.x -= 300 * dt
     if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
         player_pos.x += 300 * dt
-#lasers
+
     if keys[pygame.K_SPACE]:
-        utils.Laser(screen, player_pos, 'green')
+        lasers.append(utils.Laser(screen, (player_pos.x, player_pos.y), "red", dt))
 
+    _ = list(map(lambda x: x.move(lasers), lasers))
 
-        # end of render
+    # end of render
     pygame.display.flip()
-
-    dt = clock.tick(60) / 1000
 
 pygame.quit()
