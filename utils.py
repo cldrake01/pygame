@@ -37,15 +37,11 @@ class Enemy:
         self._box = pygame.Rect(self.pos[0], self.pos[1], 100, 100)
         self._color = tuple(map(lambda x: random.randrange(0, 255), range(3)))
 
+    def draw(self):
         pygame.draw.rect(
             self._screen,
             self._color,
-            rect=(
-                random.randrange(20, 1260),
-                random.randrange(20, 200),
-                self._box.width,
-                self._box.height,
-            ),
+            self._box,
         )
 
 
