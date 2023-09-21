@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.10 (pygame)" project-jdk-type="Python SDK" />
+  <component name="Black">
+    <option name="enabledOnReformat" value="true" />
+    <option name="enabledOnSave" value="true" />
+    <option name="executionMode" value="BINARY" />
+    <option name="pathToExecutable" value="$USER_HOME$/anaconda3/bin/black" />
+    <option name="sdkUUID" value="1691c734-f64b-4d49-97f0-1fe003626fee" />
+  </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="pygame" project-jdk-type="Python SDK" />
 </project>

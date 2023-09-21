@@ -5,24 +5,23 @@ import random
 
 
 class Laser:
-    def __init__(self, screen, pos: tuple[float, float], color, dt):
+    def __init__(self, screen, pos: list[float, float], color, dt):
         self._screen = screen
-        self.pos = list(pos[:])
+        self.pos = pos
         self._color = color
         self._dt = dt
-        self._rect = pygame.draw.rect(
-            screen,
+        self.rect = pygame.draw.rect(
+            self._screen,
             self._color,
             rect=(self.pos[0] + 46, self.pos[1] - 50, 8, 20),
         )
 
-    def move(self, lasers: list):
+    def fire(self, lasers: list):
         self.pos[1] -= 600 * self._dt
 
         if self.pos[1] < 0:
             lasers.remove(self)
         else:
-            self._rect.move(0, self.pos[1])
             pygame.draw.rect(
                 self._screen,
                 self._color,
@@ -31,25 +30,36 @@ class Laser:
 
 
 class Enemy:
-    def __init__(self):
-        self._screen = pygame.display.set_mode((1280, 720))
-        self.pos = (random.randrange(20, 1260), random.randrange(20, 200))
-        self._box = pygame.Rect(self.pos[0], self.pos[1], 100, 100)
-        self._color = tuple(map(lambda x: random.randrange(0, 255), range(3)))
+    def __init__(self, pos: list[int, int], screen, dt):
+        self._dt = dt
+        self._screen = screen
+        self.pos = pos
+        self._color = (255, 0, 255)
+        self.rect = pygame.Rect(self.pos[0], self.pos[1], 100, 100)
+        self._image = pygame.image.load("images/alien.gif")
 
-    def draw(self):
-        pygame.draw.rect(
-            self._screen,
-            self._color,
-            self._box,
-        )
+    def move(self):
+        # if self.pos[0] < 100:
+        #    direction = 1
+        # if self.pos[0] > 1000:
+        #    direction = -1
+        # if direction = -1:
+        #   self.pos[0] -= 20 * self._dt
+        # elif direction = 1:
+        #    self.pos[0] += 20 * self._dt
+
+        self.pos[1] += 20 * self._dt
+
+        self._screen.blit(self._image, self.rect)
 
 
 class Player:
     def __init__(self):
         self._screen = pygame.display.set_mode((1280, 720))
 
-        vector = pygame.Vector2((self._screen.get_width() / 2) - 50, (self._screen.get_height() / 2) - 50)
+        vector = pygame.Vector2(
+            (self._screen.get_width() / 2) - 50, (self._screen.get_height() / 2) - 50
+        )
         self.pos = [vector.x, vector.y]
 
         self._image = pygame.image.load("images/space_ship.gif")
@@ -57,7 +67,6 @@ class Player:
     def draw(self):
         rect = pygame.Rect(self.pos[0], self.pos[1], 100, 100)
         self._screen.blit(self._image, rect)
-        # pygame.draw.rect(self._screen, "white", rect)
 
 
 class Game:
@@ -67,15 +76,23 @@ class Game:
         self._screen = pygame.display.set_mode((1280, 720))
         self._clock = pygame.time.Clock()
         self._running = True
-        self._dt = 0
         self._time = 0
         self._lasers = []
+        self._enemies = []
+
+        # self._enemies = [Enemy(self._screen, self._dt)]
         self._clock = pygame.time.Clock()
+        self._dt = self._clock.tick(60) / 1000
 
     def run(self):
-
-        for i in range(9):
-            Enemy()
+        _ = list(
+            map(
+                lambda _: self._enemies.append(
+                    Enemy([random.randint(0, 1180), 200], self._screen, self._dt)
+                ),
+                range(10),
+            )
+        )
 
         while self._running:
             self._screen.fill((0, 0, 0))
@@ -84,11 +101,7 @@ class Game:
                 if event.type == pygame.QUIT:
                     self._running = False
 
-            self._dt = self._clock.tick(60) / 1000
-
             self._player.draw()
-            for i in range(10):
-                Enemy().draw()
 
             keys = pygame.key.get_pressed()
 
@@ -102,11 +115,25 @@ class Game:
                 self._player.pos[0] += 300 * self._dt
 
             if keys[pygame.K_SPACE] and self._time < time.time():
-                self._lasers.append(Laser(self._screen,
-                                          (self._player.pos[0], self._player.pos[1]), "green", self._dt))
+                self._lasers.append(
+                    Laser(
+                        self._screen,
+                        [self._player.pos[0], self._player.pos[1]],
+                        "green",
+                        self._dt,
+                    )
+                )
                 self._time = time.time() + 0.4
 
-            _ = list(map(lambda laser: laser.move(self._lasers), self._lasers))
+            _ = list(map(lambda laser: laser.fire(self._lasers), self._lasers))
+
+            _ = list(map(lambda enemy: enemy.move(), self._enemies))
+
+            for enemy in self._enemies:
+                for laser in self._lasers:
+                    if enemy.rect.colliderect(laser.rect):
+                        self._enemies.remove(enemy)
+                        self._lasers.remove(laser)
 
             pygame.display.flip()
 
