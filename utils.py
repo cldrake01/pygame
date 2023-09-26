@@ -39,16 +39,14 @@ class Enemy:
         self._image = pygame.image.load("images/alien.gif")
 
     def move(self):
-        # if self.pos[0] < 100:
-        #    direction = 1
-        # if self.pos[0] > 1000:
-        #    direction = -1
-        # if direction = -1:
-        #   self.pos[0] -= 20 * self._dt
-        # elif direction = 1:
-        #    self.pos[0] += 20 * self._dt
+        if self.pos[0] < 100:
+            self.pos[0] += 20 * self._dt
+        elif self.pos[0] > 1000:
+            self.pos[0] -= 20 * self._dt
 
         self.pos[1] += 20 * self._dt
+
+        self.rect = pygame.Rect(self.pos[0], self.pos[1], 100, 100)
 
         self._screen.blit(self._image, self.rect)
 
