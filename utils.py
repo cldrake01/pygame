@@ -10,10 +10,12 @@ class Laser:
         self.pos = pos
         self._color = color
         self._dt = dt
-        self.rect = pygame.draw.rect(
+
+        self.rect = pygame.Rect(self.pos[0] + 46, self.pos[1] - 20, 8, 20),
+        pygame.draw.rect(
             self._screen,
             self._color,
-            rect=(self.pos[0] + 46, self.pos[1] - 50, 8, 20),
+            rect=self.rect
         )
 
     def fire(self, lasers: list):
@@ -22,10 +24,12 @@ class Laser:
         if self.pos[1] < 0:
             lasers.remove(self)
         else:
+            self.rect = pygame.Rect(self.pos[0] + 46, self.pos[1] - 20, 8, 20),
+
             pygame.draw.rect(
                 self._screen,
                 self._color,
-                rect=(self.pos[0] + 46, self.pos[1] - 20, 8, 20),
+                rect=self.rect
             )
 
 
@@ -44,7 +48,7 @@ class Enemy:
         elif self.pos[0] > 1000:
             self.pos[0] -= 20 * self._dt
 
-        self.pos[1] += 20 * self._dt
+        self.pos[1] += 2 * self._dt
 
         self.rect = pygame.Rect(self.pos[0], self.pos[1], 100, 100)
 
@@ -104,13 +108,13 @@ class Game:
             keys = pygame.key.get_pressed()
 
             if keys[pygame.K_w] or keys[pygame.K_UP]:
-                self._player.pos[1] -= 300 * self._dt
+                self._player.pos[1] -= 50 * self._dt
             if keys[pygame.K_s] or keys[pygame.K_DOWN]:
-                self._player.pos[1] += 300 * self._dt
+                self._player.pos[1] += 50 * self._dt
             if keys[pygame.K_a] or keys[pygame.K_LEFT]:
-                self._player.pos[0] -= 300 * self._dt
+                self._player.pos[0] -= 50 * self._dt
             if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
-                self._player.pos[0] += 300 * self._dt
+                self._player.pos[0] += 50 * self._dt
 
             if keys[pygame.K_SPACE] and self._time < time.time():
                 self._lasers.append(
